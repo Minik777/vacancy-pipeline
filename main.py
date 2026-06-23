@@ -1,12 +1,11 @@
 from db.database import init_db
-import json
 from etl.extract import get_posts
 from etl.transform import transform_vacancy
 from db.database import Session
 from etl.load import save_vacancy
 from analytics.queries import (average_salary, vacancy_count_by_company,
                                max_salary, min_salary, count_all_vacancies,
-                               vacancy_sity, top_salary_from)
+                               vacancy_city, top_salary_from)
 
 if __name__ == '__main__':
     init_db()
@@ -28,19 +27,19 @@ if __name__ == '__main__':
              print(company_name, vacancy_count)
 
          max_salary = max_salary(session)
-         for vacancy_id, salary in max_salary:
-             print(vacancy_id, salary)
+         vacancy_id, salary = max_salary
+         print(vacancy_id, salary)
 
          min_salary = min_salary(session)
-         for vacancy_id, salary in min_salary:
-             print(vacancy_id, salary)
+         vacancy_id, salary = min_salary
+         print(vacancy_id, salary)
 
          all_vac = count_all_vacancies(session)
          print(all_vac)
 
-         vacancy_sity = vacancy_sity(session)
-         for sity, vacancies in vacancy_sity:
-             print(sity, vacancies)
+         vacancy_city = vacancy_city(session)
+         for city, vacancies in vacancy_city:
+             print(city, vacancies)
 
          top_salary_from = top_salary_from(session)
          for vacancy_id, salary in top_salary_from:

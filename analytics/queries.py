@@ -1,4 +1,4 @@
-from sqlalchemy import select, func
+from sqlalchemy import select, func, text
 
 from db.models import Vacancy, Company
 
@@ -24,38 +24,54 @@ def vacancy_count_by_company(session):
     return result
 
 def max_salary(session):
-    statement = (select(Vacancy.id, func.max(Vacancy.salary_from))
-                 .order_by(Vacancy.salary_from.desc())
-                 .limit(1)
-                 )
-    result = session.execute(statement).all()
+    statement = text("""
+                     SELECT id, salary_from 
+                     FROM vacancies
+                     WHERE salary_from IS NOT NULL
+                     ORDER BY salary_from DESC
+                     LIMIT 1
+                     """)
+    result = session.execute(statement).first()
     return result
 
 def min_salary(session):
-    statement = (select(Vacancy.id, func.min(Vacancy.salary_from))
-                 .order_by(Vacancy.salary_from.asc())
-                 .limit(1)
-                 )
-    result = session.execute(statement).all()
+    statement = text("""
+                     SELECT id, salary_from
+                     FROM vacancies
+                     WHERE salary_from IS NOT NULL
+                     ORDER BY salary_from ASC 
+                     LIMIT 1
+                     """)
+    result = session.execute(statement).first()
     return result
 
 def count_all_vacancies(session):
-    statement = select(func.count(Vacancy.id))
+    statement = text("""
+        SELECT count(*)
+        from vacancies
+        """)
     result = session.scalar(statement)
     return result
 
-def vacancy_sity(session):
-    statement = (select(Vacancy.city, func.count(Vacancy.id))
-                 .group_by(Vacancy.city)
-                 )
+def vacancy_city(session):
+    statement = text("""
+        SELECT city, count(*) 
+        FROM vacancies
+        GROUP BY city
+        """)
     result = session.execute(statement).all()
     return result
 
 def top_salary_from(session):
-    statement = (select(Vacancy.id, Vacancy.salary_from)
-                 .where(Vacancy.salary_from != None)
-                 .order_by(Vacancy.salary_from.desc())
-                 .limit(3)
-                 )
+    statement = text("""
+        SELECT id, salary_from 
+        FROM vacancies
+        ORDER BY salary_from DESC
+        LIMIT 1""")
+        # (select(Vacancy.id, Vacancy.salary_from)
+        #          .where(Vacancy.salary_from != None)
+        #          .order_by(Vacancy.salary_from.desc())
+        #          .limit(3)
+        #          )
     result = session.execute(statement).all()
     return result
