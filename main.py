@@ -4,8 +4,7 @@ from etl.transform import transform_vacancy
 from db.database import Session
 from etl.load import save_vacancy
 from analytics.queries import (average_salary, vacancy_count_by_company,
-                               max_salary, min_salary, count_all_vacancies,
-                               vacancy_city, top_salary_from, top_tags)
+                               max_salary)
 from config import DEFAULT_QUERY, DEFAULT_COUNT
 
 if __name__ == '__main__':
