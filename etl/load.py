@@ -1,4 +1,4 @@
-from db.models import Vacancy, Company
+from db.models import Vacancy, Company, Tag
 from sqlalchemy import select
 def get_or_create_company(session, company_name: str):
     statement = select(Company).where(Company.name == company_name)
@@ -9,6 +9,19 @@ def get_or_create_company(session, company_name: str):
     session.add(company)
     session.flush()
     return company
+
+def get_or_create_tag(session, tag_name):
+    statement = select(Tag).where(Tag.name == tag_name)
+    tag = session.scalar(statement)
+
+    if tag:
+        return tag
+
+    tag = Tag(name=tag_name)
+    session.add(tag)
+    session.flush()
+
+    return tag
 
 def save_vacancy(session, clean: dict):
     company = get_or_create_company(
@@ -31,7 +44,12 @@ def save_vacancy(session, clean: dict):
         company_id=company.id
     )
     session.add(vacancy)
+    for tag_name in clean.get("tags", []):
+        tag = get_or_create_tag(session, tag_name)
+        vacancy.tags.append(tag)
     return vacancy
+
+
 
 
 

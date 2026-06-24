@@ -1,5 +1,5 @@
 from db.database import Base
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from sqlalchemy import String, Float, DateTime, ForeignKey
 
 from datetime import datetime
@@ -12,6 +12,12 @@ class Company(Base):
 # пока без relationship в трёх таблицах
 class Tag(Base):
     __tablename__ = "tags"
+
+    vacancies = relationship(
+        "Vacancy",
+        secondary="vacancies_tags",
+        back_populates="tags"
+    )
 
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(255), nullable=False, unique=True)
@@ -31,7 +37,12 @@ class Vacancy(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(), nullable=False, default=datetime.utcnow)
     company_id: Mapped[int] = mapped_column(ForeignKey(Company.id), nullable=False)
 
-class vacancy_tag(Base):
+    tags = relationship(
+            "Tag",
+            secondary="vacancies_tags",
+            back_populates="vacancies"
+        )
+class Vacancy_tag(Base):
     __tablename__ = "vacancies_tags"
     vacancy_id: Mapped[int] = mapped_column(ForeignKey("vacancies.id"), primary_key=True)
     tag_id: Mapped[int] = mapped_column(ForeignKey("tags.id"), primary_key=True)
