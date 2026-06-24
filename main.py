@@ -5,7 +5,7 @@ from db.database import Session
 from etl.load import save_vacancy
 from analytics.queries import (average_salary, vacancy_count_by_company,
                                max_salary, min_salary, count_all_vacancies,
-                               vacancy_city, top_salary_from)
+                               vacancy_city, top_salary_from, top_tags)
 
 if __name__ == '__main__':
     init_db()
@@ -43,5 +43,9 @@ if __name__ == '__main__':
          # top_salary_from = top_salary_from(session)
          # for vacancy_id, salary in top_salary_from:
          #     print(vacancy_id, salary)
+
+         top_tag = top_tags(session)
+         tage_name, count = top_tag
+         print(tage_name, count)
 
 
