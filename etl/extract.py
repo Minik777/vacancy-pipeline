@@ -1,16 +1,13 @@
 import requests
-import json
+from config import API_URL, HEADERS
+
 def get_posts(query, count=20) -> list[dict]:
-    url = "https://jobicy.com/api/v2/remote-jobs"
     params = {
         'count': count,
         'tag': query
     }
-    headers = {
-        'User-Agent': 'vacancy-pipeline/1.0'
-    }
 
-    response = requests.get(url, params=params, headers=headers)
+    response = requests.get(API_URL, params=params, headers=HEADERS)
     data = response.json()
     return data["jobs"]
 
